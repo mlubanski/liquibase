@@ -24,40 +24,34 @@
     </dependency>
   </dependencies>
 
-  <profiles>
-    <!-- profile for updating developer database -->
-    <profile>
-      <id>liquibase-dev</id>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.liquibase</groupId>
-              <artifactId>liquibase-maven-plugin</artifactId>
-              <version>${liquibase-maven-plugin.version}</version>
-              <configuration>
-                <driver>${dev.liquibase.driver}</driver>
-                <url>${dev.liquibase.url}</url>
-                <username>${dev.liquibase.username}</username>
-                <password>${dev.liquibase.password}</password>
-                <defaultSchemaName>${dev.liquibase.defaultSchemaName}</defaultSchemaName>
-                <promptOnNonLocalDatabase>true</promptOnNonLocalDatabase>
-                <changeLogFile>changelogs/db.changelog.master.xml</changeLogFile>
-                <propertyFileWillOverride>true</propertyFileWillOverride>
-              </configuration>
-              <executions>
-                <execution>
-                  <phase>process-resources</phase>
-                  <goals>
-                    <goal>update</goal>
-                  </goals>
-                </execution>
-              </executions>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-  </profiles>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.liquibase</groupId>
+          <artifactId>liquibase-maven-plugin</artifactId>
+          <version>${liquibase-maven-plugin.version}</version>
+          <configuration>
+            <driver>${dev.liquibase.driver}</driver>
+            <url>${dev.liquibase.url}</url>
+            <username>${dev.liquibase.username}</username>
+            <password>${dev.liquibase.password}</password>
+            <defaultSchemaName>${dev.liquibase.defaultSchemaName}</defaultSchemaName>
+            <promptOnNonLocalDatabase>true</promptOnNonLocalDatabase>
+            <changeLogFile>changelogs/db.changelog.master.xml</changeLogFile>
+            <propertyFileWillOverride>true</propertyFileWillOverride>
+          </configuration>
+          <executions>
+            <execution>
+              <phase>process-resources</phase>
+              <goals>
+                <goal>update</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
 </project>
