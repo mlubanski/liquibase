@@ -1,0 +1,63 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>smartsoftwaredevelopment.com</groupId>
+  <artifactId>liquibase</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>liquibase</name>
+
+  <properties>
+    <java.version>1.8</java.version>
+    <liquibase-maven-plugin.version>3.4.2</liquibase-maven-plugin.version>
+    <postgresql-connector.version>9.1-901.jdbc4</postgresql-connector.version>
+  </properties>
+
+  <dependencies>
+    <!-- Database connectors -->
+    <dependency>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>${postgresql-connector.version}</version>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <!-- profile for updating developer database -->
+    <profile>
+      <id>liquibase-dev</id>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.liquibase</groupId>
+              <artifactId>liquibase-maven-plugin</artifactId>
+              <version>${liquibase-maven-plugin.version}</version>
+              <configuration>
+                <driver>${dev.liquibase.driver}</driver>
+                <url>${dev.liquibase.url}</url>
+                <username>${dev.liquibase.username}</username>
+                <password>${dev.liquibase.password}</password>
+                <defaultSchemaName>${dev.liquibase.defaultSchemaName}</defaultSchemaName>
+                <promptOnNonLocalDatabase>true</promptOnNonLocalDatabase>
+                <changeLogFile>changelogs/db.changelog.master.xml</changeLogFile>
+                <propertyFileWillOverride>true</propertyFileWillOverride>
+              </configuration>
+              <executions>
+                <execution>
+                  <phase>process-resources</phase>
+                  <goals>
+                    <goal>update</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+  </profiles>
+
+</project>
