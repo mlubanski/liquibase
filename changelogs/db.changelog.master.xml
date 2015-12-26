@@ -2,7 +2,13 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
+  <property name="pk.type" value="NUMERIC(10,0)" />
+  <property name="char.lengthSemantic" value="char" dbms="oracle" />
+  <property name="char.lengthSemantic" value="" dbms="postgresql" />  
+  <property name="now" value="sysdate" dbms="oracle" />
+  <property name="now" value="now()" dbms="postgresql" />
+
   <!-- 1.0 -->
-  <include file="changelogs/version-1.0/sprint-1/db.changelog.pi-1.0.xml" />
+  <include file="changelogs/version-1.0/sprint-1/db.changelog.master.xml" />
 
 </databaseChangeLog>

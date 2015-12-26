@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="1451165505" author="mlubanski">
+        <createTable tableName="RETROSPECTIVE">
+            <column name="ID" type="${pk.type}">
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="DATE" type="date" defaultValue="${now}">
+                <constraints nullable="false" />
+            </column>
+            <column name="UUID" type="varchar(255 ${char.lengthSemantic})" >
+                <constraints unique="true" />
+            </column>
+        </createTable>
+        <createSequence sequenceName="RETROSPECTIVE_SEQ" />
+    </changeSet>
+
+    <changeSet author="mlubanski" id="1451165505-1" dbms="postgresql">
+        <preConditions onFail="WARN">
+            <dbms type="postgresql" />
+        </preConditions>
+        <createProcedure>
+            create or replace function RETROSPECTIVE_FCT()
+            returns trigger
+            as
+            $body$
+            begin
+                if new.id is null then
+                    new.id:=nextval('RETROSPECTIVE_SEQ');
+                end if;
+                    return new;
+            end;
+            $body$
+            language
+            plpgsql;
+        </createProcedure>
+        <rollback>
+            drop function RETROSPECTIVE_FCT()
+        </rollback>
+    </changeSet>
+
+    <changeSet author="mlubanski" id="1451165505-2" dbms="postgresql">
+        <preConditions onFail="WARN">
+            <dbms type="postgresql" />
+        </preConditions>
+        <sql>
+            create trigger RETROSPECTIVE_TRG
+            before insert
+            on RETROSPECTIVE
+            for each
+            row
+            execute procedure
+            RETROSPECTIVE_FCT();
+        </sql>
+        <rollback>
+            drop trigger RETROSPECTIVE_TRG on RETROSPECTIVE;
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

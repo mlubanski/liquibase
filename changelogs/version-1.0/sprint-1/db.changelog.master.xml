@@ -4,4 +4,6 @@
 
   <!-- Separate changelog dataset files for sprint 1 -->
   <include file="changelogs/version-1.0/sprint-1/db.changelog.2015-12-19.xml" />
+  <include file="changelogs/version-1.0/sprint-1/db.changelog.2015-12-27.xml" />
+  
 </databaseChangeLog> 
