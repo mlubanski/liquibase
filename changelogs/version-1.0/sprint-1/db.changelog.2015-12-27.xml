@@ -4,7 +4,7 @@
 
     <changeSet id="1451165505" author="mlubanski">
         <createTable tableName="RETROSPECTIVE">
-            <column name="ID" type="${pk.type}">
+            <column name="ID" type="${pk.type}" >
                 <constraints nullable="false" primaryKey="true" />
             </column>
             <column name="DATE" type="date" defaultValue="${now}">
@@ -14,49 +14,55 @@
                 <constraints unique="true" />
             </column>
         </createTable>
-        <createSequence sequenceName="RETROSPECTIVE_SEQ" />
     </changeSet>
 
     <changeSet author="mlubanski" id="1451165505-1" dbms="postgresql">
-        <preConditions onFail="WARN">
-            <dbms type="postgresql" />
-        </preConditions>
-        <createProcedure>
-            create or replace function RETROSPECTIVE_FCT()
-            returns trigger
-            as
-            $body$
-            begin
-                if new.id is null then
-                    new.id:=nextval('RETROSPECTIVE_SEQ');
-                end if;
-                    return new;
-            end;
-            $body$
-            language
-            plpgsql;
-        </createProcedure>
-        <rollback>
-            drop function RETROSPECTIVE_FCT()
-        </rollback>
+        <addAutoIncrement tableName="RETROSPECTIVE" columnName="ID" incrementBy="1" startWith="1" />
     </changeSet>
 
-    <changeSet author="mlubanski" id="1451165505-2" dbms="postgresql">
-        <preConditions onFail="WARN">
-            <dbms type="postgresql" />
-        </preConditions>
-        <sql>
-            create trigger RETROSPECTIVE_TRG
-            before insert
-            on RETROSPECTIVE
-            for each
-            row
-            execute procedure
-            RETROSPECTIVE_FCT();
-        </sql>
-        <rollback>
-            drop trigger RETROSPECTIVE_TRG on RETROSPECTIVE;
-        </rollback>
+
+    <changeSet id="1451222488" author="mlubanski">
+        <createTable tableName="TOPIC">
+            <column name="ID" type="${pk.type}">
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="RETROSPECTIVE_ID" type="${pk.type}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="varchar(255 ${char.lengthSemantic})" />
+            <column name="RESPONSIBLE_PERSON" type="varchar(50 ${char.lengthSemantic})" />
+            <column name="VOTES" type="numeric(2,0)" />
+            <column name="TYPE" type="varchar(15 ${char.lengthSemantic})">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="ID" baseTableName="TOPIC" constraintName="TOPIC_RETROSPECTIVE_FK"
+            onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="RETROSPECTIVE" />
     </changeSet>
+
+    <changeSet author="mlubanski" id="1451222488-1" dbms="postgresql">
+        <addAutoIncrement tableName="TOPIC" columnName="ID" incrementBy="1" startWith="1" />
+    </changeSet>
+    
+    
+    <changeSet id="1451233457" author="mlubanski">
+        <createTable tableName="TODO">
+            <column name="ID" type="${pk.type}">
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="TOPIC_ID" type="${pk.type}" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="varchar(255 ${char.lengthSemantic})" />
+            <column name="IS_SOLVED" type="boolean" defaultValueBoolean="false" />        
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="ID" baseTableName="TODO" constraintName="TODO_TOPIC_FK"
+            onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="TOPIC"/>
+    </changeSet>
+
+    <changeSet author="mlubanski" id="1451233457-1" dbms="postgresql">
+        <addAutoIncrement tableName="TODO" columnName="ID" incrementBy="1" startWith="1" />
+    </changeSet>
+    
 
 </databaseChangeLog>
