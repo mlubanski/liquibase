@@ -65,4 +65,21 @@
     </changeSet>
     
 
+    <changeSet id="1451248096" author="mlubanski">
+        <createTable tableName="COMMENT">
+            <column name="ID" type="${pk.type}">
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="TOPIC_ID" type="${pk.type}">
+                <constraints nullable="false" />
+            </column>
+            <column name="DESCRIPTION" type="varchar(1000 ${char.lengthSemantic})" />
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="ID" baseTableName="COMMENT" constraintName="COMMENT_TOPIC_FK"
+            onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="TOPIC" />
+    </changeSet>
+
+    <changeSet author="mlubanski" id="1451248096-1" dbms="postgresql">
+        <addAutoIncrement tableName="COMMENT" columnName="ID" incrementBy="1" startWith="1" />
+    </changeSet>
 </databaseChangeLog>
